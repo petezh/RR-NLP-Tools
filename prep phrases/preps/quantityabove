@@ -1,0 +1,3 @@
+TRUE_NAME:QuantityAbove	GROUP:Quantity,Quantity	PARENTS:Quantity,Quantity	CHILDREN:	COORDINATES:Degrees,QuantityAbove,QuantitySurpassed
+below	000112366=4	lower than (a specified amount or standard):
+under	000517214=8	lower than (a specified amount, rate, or norm):

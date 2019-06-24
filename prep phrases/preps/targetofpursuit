@@ -1,0 +1,3 @@
+TRUE_NAME:TargetOfPursuit	GROUP:Target	PARENTS:Target	CHILDREN:	COORDINATES:Affectee,GoalApproached,Impactee,Target,TargetOfAction,TargetOfAllusion,TargetOfAttitude,TargetOfBehavior,TargetOfBlow,TargetOfDisplay,TargetOfImitation,TargetOfPursuit,TargetOfSpending,ThingInspected
+after	000024784=9	in pursuit or quest of:
+at the heels of	000094633=1	following closely after:

@@ -1,0 +1,5 @@
+TRUE_NAME:TimePeriod	GROUP:Temporal	PARENTS:Temporal	CHILDREN:	COORDINATES:DateOfCreation,DateofRecord,Day,EventAfter,EventInFuture,EventInTime,EventPreceding,Hour,Occasion,PartyAnticipating,PeriodBisected,PeriodEnduring,PeriodLimit,PeriodLimiting,PeriodOfActivity,PeriodRepeated,PeriodSurveyed,PeriodTraversed,TimeApproached,TimeBisected,TimeBoundary,TimeLater,TimeOrigin,TimePeriod,TimePoint,TimeTargeted,Timeframe
+after	000024784=2	in the time following (an event or another period of time):
+at	000078899=4	(followed by a noun without a determiner) denoting a particular period of time:
+for	000193438=14	indicating the length of (a period of time):
+subsequent to	000470743=1	coming after something in time; following:

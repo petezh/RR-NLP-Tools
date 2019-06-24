@@ -1,0 +1,5 @@
+TRUE_NAME:Hour	GROUP:Temporal	PARENTS:Temporal	CHILDREN:	COORDINATES:DateOfCreation,DateofRecord,Day,EventAfter,EventInFuture,EventInTime,EventPreceding,Hour,Occasion,PartyAnticipating,PeriodBisected,PeriodEnduring,PeriodLimit,PeriodLimiting,PeriodOfActivity,PeriodRepeated,PeriodSurveyed,PeriodTraversed,TimeApproached,TimeBisected,TimeBoundary,TimeLater,TimeOrigin,TimePeriod,TimePoint,TimeTargeted,Timeframe
+after	000024784=5	past
+gone	000229097=1	(of time) past:
+of	000342956=21	expressing time in relation to the following hour:
+to	000493932=5	(in telling the time) before (the hour specified):

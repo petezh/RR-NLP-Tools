@@ -1,0 +1,2 @@
+TRUE_NAME:PeriodOfActivity	GROUP:Temporal	PARENTS:Temporal	CHILDREN:	COORDINATES:DateOfCreation,DateofRecord,Day,EventAfter,EventInFuture,EventInTime,EventPreceding,Hour,Occasion,PartyAnticipating,PeriodBisected,PeriodEnduring,PeriodLimit,PeriodLimiting,PeriodOfActivity,PeriodRepeated,PeriodSurveyed,PeriodTraversed,TimeApproached,TimeBisected,TimeBoundary,TimeLater,TimeOrigin,TimePeriod,TimePoint,TimeTargeted,Timeframe
+by	000143452=21	indicating the period in which something happens:

@@ -1,0 +1,5 @@
+TRUE_NAME:TimeOrigin	GROUP:Temporal	PARENTS:Temporal	CHILDREN:	COORDINATES:DateOfCreation,DateofRecord,Day,EventAfter,EventInFuture,EventInTime,EventPreceding,Hour,Occasion,PartyAnticipating,PeriodBisected,PeriodEnduring,PeriodLimit,PeriodLimiting,PeriodOfActivity,PeriodRepeated,PeriodSurveyed,PeriodTraversed,TimeApproached,TimeBisected,TimeBoundary,TimeLater,TimeOrigin,TimePeriod,TimePoint,TimeTargeted,Timeframe
+as from	000072304=1	used to indicate the time or date from which something starts:
+as of	000073043=1	used to indicate the time or date from which something starts:
+from	000211938=4	indicating the point in time at which a particular process, event, or activity starts:
+since	000469301=2	in the intervening period between (the time mentioned) and the time under consideration, typically the present:

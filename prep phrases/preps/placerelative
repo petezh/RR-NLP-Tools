@@ -1,0 +1,7 @@
+TRUE_NAME:PlaceRelative	GROUP:Spatial	PARENTS:Spatial	CHILDREN:	COORDINATES:AreaBounded,BodyPartPermeated,BoundaryMarker,ChannelTransited,Conveyance,Destination,DeviceInHeraldry,Directional,DistanceLimit,DistanceTransited,EntityEnclosing,Ground,GroundOfRoute,Handle,HeightEqualed,MotionGoal,ObjectInFront,ObstaclePassed,PartyBordering,PartyEnclosing,Path,Place,PlaceAbandoned,PlaceAlignedTo,PlaceBeside,PlaceBisected,PlaceCoastal,PlaceDownstream,PlaceFurtherAlong,PlaceOfObserver,PlaceOfOrigin,PlacePassed,PlacePast,PlaceRelative,PlaceSaturated,PlaceSurrounding,PlaceTraversed,Residence,Roadway,Route,ShipPart,SurfaceSupporting,TargetOfMotion,TargetReceptacle,ThingAbove,ThingAdjacent,ThingBlanketing,ThingBored,ThingBridged,ThingCovered,ThingCrowded,ThingDescended,ThingDescendedFrom,ThingEncircled,ThingEntered,ThingFacing,ThingFollowed,ThingInFront,ThingIntervening,ThingPassed,ThingPenetrated,ThingPermeated,ThingScaled,ThingStraddled,ThingSurmounted,ThingSurrounded,ThingSurveyed,ThingTransited,ThingTraversed,Watercourse
+across	000020094=4	expressing position or orientation:
+aslant	000076304=1	across (something) at an angle.
+of	000342956=11	expressing the relationship between a direction and a point of reference:
+off	000365587=3	situated or leading in a direction away from (a main route or intersection):
+opposite	000409101=2	in a position on the other side of a specific area from; facing:
+to	000493932=3	expressing location, typically in relation to a specified point of reference:

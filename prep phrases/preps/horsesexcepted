@@ -1,0 +1,2 @@
+TRUE_NAME:HorsesExcepted	GROUP:Exception	PARENTS:Exception	CHILDREN:	COORDINATES:Exception,HorsesExcepted,PartyRequired,ThingDisregarded,ThingExcluded
+bar	000097654=2	(used when stating the odds) except (a particular horse or horses)

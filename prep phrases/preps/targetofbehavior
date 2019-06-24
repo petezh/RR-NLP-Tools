@@ -1,0 +1,2 @@
+TRUE_NAME:TargetOfBehavior	GROUP:Target	PARENTS:Target	CHILDREN:	COORDINATES:Affectee,GoalApproached,Impactee,Target,TargetOfAction,TargetOfAllusion,TargetOfAttitude,TargetOfBehavior,TargetOfBlow,TargetOfDisplay,TargetOfImitation,TargetOfPursuit,TargetOfSpending,ThingInspected
+towards	000512104=5	expressing the relation between a behavior and the person or thing at which it is directed

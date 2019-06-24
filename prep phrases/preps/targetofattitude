@@ -1,0 +1,2 @@
+TRUE_NAME:TargetOfAttitude	GROUP:Target	PARENTS:Target	CHILDREN:	COORDINATES:Affectee,GoalApproached,Impactee,Target,TargetOfAction,TargetOfAllusion,TargetOfAttitude,TargetOfBehavior,TargetOfBlow,TargetOfDisplay,TargetOfImitation,TargetOfPursuit,TargetOfSpending,ThingInspected
+towards	000512104=6	expressing the relation between an attitude and the person or thing at which it is directed or with which it is concerned

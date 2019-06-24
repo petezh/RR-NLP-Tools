@@ -1,0 +1,2 @@
+TRUE_NAME:UnitReference	GROUP:Quantity	PARENTS:Quantity	CHILDREN:	COORDINATES:Age,Amount,AmountAdded,AmountOfVariance,Approximation,DebitEntry,Distance,Dividend,Exponent,LevelApproached,Magnitude,Modulus,Multiplier,OriginOfMeasure,Price,Quantity,RatioDenominator,StandardMissed,Subtrahend,Sum,SumBasis,TargetMissed,ThingAdditional,UnitReference,UnitSize
+per	000444177=2	for each (used with units to express a rate):

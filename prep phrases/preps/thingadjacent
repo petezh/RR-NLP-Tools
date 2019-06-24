@@ -1,0 +1,8 @@
+TRUE_NAME:ThingAdjacent	GROUP:Spatial	PARENTS:Spatial	CHILDREN:	COORDINATES:AreaBounded,BodyPartPermeated,BoundaryMarker,ChannelTransited,Conveyance,Destination,DeviceInHeraldry,Directional,DistanceLimit,DistanceTransited,EntityEnclosing,Ground,GroundOfRoute,Handle,HeightEqualed,MotionGoal,ObjectInFront,ObstaclePassed,PartyBordering,PartyEnclosing,Path,Place,PlaceAbandoned,PlaceAlignedTo,PlaceBeside,PlaceBisected,PlaceCoastal,PlaceDownstream,PlaceFurtherAlong,PlaceOfObserver,PlaceOfOrigin,PlacePassed,PlacePast,PlaceRelative,PlaceSaturated,PlaceSurrounding,PlaceTraversed,Residence,Roadway,Route,ShipPart,SurfaceSupporting,TargetOfMotion,TargetReceptacle,ThingAbove,ThingAdjacent,ThingBlanketing,ThingBored,ThingBridged,ThingCovered,ThingCrowded,ThingDescended,ThingDescendedFrom,ThingEncircled,ThingEntered,ThingFacing,ThingFollowed,ThingInFront,ThingIntervening,ThingPassed,ThingPenetrated,ThingPermeated,ThingScaled,ThingStraddled,ThingSurmounted,ThingSurrounded,ThingSurveyed,ThingTransited,ThingTraversed,Watercourse
+beside	000121466=2	at the side of; next to:
+near	000329012=2	at or to a short distance away from (a place):
+near to	000333150=2	at or to a short distance away from (a place):
+next door to	000336644=1	in the next house or room to.
+next to	000337760=1	in or into a position immediately to one side of; beside.
+out of	000410872=7	situated far or at a particular distance from somewhere:
+outboard of	000416298=1	to the outside or on the far side of:

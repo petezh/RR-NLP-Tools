@@ -1,0 +1,2 @@
+TRUE_NAME:OriginOfMeasure	GROUP:Quantity	PARENTS:Quantity	CHILDREN:	COORDINATES:Age,Amount,AmountAdded,AmountOfVariance,Approximation,DebitEntry,Distance,Dividend,Exponent,LevelApproached,Magnitude,Modulus,Multiplier,OriginOfMeasure,Price,Quantity,RatioDenominator,StandardMissed,Subtrahend,Sum,SumBasis,TargetMissed,ThingAdditional,UnitReference,UnitSize
+from	000211938=3	indicating the distance between a particular place and another place used as a point of reference:

@@ -1,0 +1,3 @@
+TRUE_NAME:DrownedSound	GROUP:Backdrop	PARENTS:Backdrop	CHILDREN:	COORDINATES:ActionOmitted,ActivityLimiting,Backdrop,Circumstances,Condition,Crop,Dish,DrownedSound,Drug,EntityConfronting,EventArising,Malady,Manner&Mood,OperatingSystem,OriginCleft,OutcomeDesired,PartyPresent,PartyRespected,Reaction,Repository,Role,Rule,SeriesItem,SoundAcccompanying,SourceOfGoods,Stimulus,ThingIncluded,ThingNotPresent,ThingSupplemented,ThingSupplmented
+above	000010708=9	at a higher volume or pitch than:
+over	000423047=10	higher in volume or pitch than:
