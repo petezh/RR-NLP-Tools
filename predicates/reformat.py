@@ -25,7 +25,8 @@ def reformat(fileName, dictName, synName):
             syns[pairs[0]].append(pairs[1])
         else:
             syns[pairs[0]] = [pairs[1]]
-        
+
+        # build a reverse synonyms dictionary
         if pairs[1] in synIDs:
             synIDs[pairs[1]].append(pairs[0])
         else:
@@ -44,6 +45,7 @@ def reformat(fileName, dictName, synName):
 
     wtr = csv.writer(open("results.csv", 'w'))
 
+    # headings
     wtr.writerow(["subject","predicate","object", "root","synonyms"])
     
     for row in rdr:
@@ -54,9 +56,12 @@ def reformat(fileName, dictName, synName):
         verb = row[1]
         root = roots[verb]
         syn = set()
+
+        # use sets to avoid duplicates
         for ID in synIDs[root]:
             syn.update(syns[ID])
 
+        # write to output
         wtr.writerow([subject, verb, obj, root, syn])
         
         

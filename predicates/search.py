@@ -2,8 +2,6 @@ import csv
 
 def main():
 
-    
-
     output = open("tuples.txt", 'w')
     wtr = csv.writer(output)
     
@@ -13,10 +11,14 @@ def main():
 
     # parse in file
     for row in rdr:
+
+        # evaluate each sentence
         sentence = row[0]
         verbs = eval(row[1])
         terms = eval(row[2])
         tuples = search(sentence, verbs, terms)
+
+        # write to output
         for tpl in tuples:
             wtr.writerow(tpl)
     
@@ -26,7 +28,7 @@ def search(sentence, verbs, terms):
     lv2terms = list()
     lv3terms = list()
     
-    # classify terms
+    # classify terms by level
     for term in terms:
 
         level = getLevel(term[0])
@@ -37,7 +39,8 @@ def search(sentence, verbs, terms):
             lv2terms.append(term)
         if level == 3:
             lv3terms.append(term)
-    
+
+    # build tuples for each term
     tuples_1 = buildTuples(sentence, lv1terms, verbs, 1)
     tuples_2 = buildTuples(sentence, lv2terms, verbs, 2)
     tuples_3 = buildTuples(sentence, lv3terms, verbs, 3)
@@ -81,11 +84,15 @@ def buildTuples(sentence, terms, verbs, level):
     beg = -1
     end = -1
     term = ""
-    
+
+    # iterate through the terms
     for term in terms:
-        
+
+        # get indices
         start, stop = getIndices(term[1], sentence)
         end = start
+
+        # search for verbs between terms
         if end > beg:
             for verb in verbs:
                 if not sentence.find(verb, beg, end) == -1:
