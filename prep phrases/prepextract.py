@@ -28,14 +28,14 @@ for file in onlyfiles:
         
             words = line.split()
 
-            ## Find where the number is
+            ## find where the number is
             for i in range(len(words)):
                 if re.search('\d+', words[i]):
                     print(words[i])
                     index = i
                     break
 
-            ## Split the list into two strings
+            ## split the list into two strings
             separator = " "
             prepPhrase = separator.join(words[0:index])
             usedWith = separator.join(words[index+1:])
