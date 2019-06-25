@@ -1,8 +1,6 @@
 import csv
 
 
-
-
 def main():
     reformat("tuples.csv", "lemmas.csv", "synonyms.csv")
 
