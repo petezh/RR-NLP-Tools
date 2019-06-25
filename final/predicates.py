@@ -2,28 +2,40 @@ import csv
 import re
 import string
 import nltk
-
+import os
 
 def main():
-        
+
+    # specify filepaths
     tablename = "raw.csv"
     lemmapath = "tools\\lemmas.csv"
     preppath = "tools\\preps.csv"
     synpath = "tools\\synonyms.csv"
     filterpath = "tools\\filters.csv"
-    
+
     execute(tablename, lemmapath, preppath, synpath, filterpath)
 
-
 def execute(table, lemma, prep, syn, filt):
+    
     getVerbs(table, 'verbs.csv', lemma)
     getTuples('verbs.csv', 'tuples.csv')
     reformat("tuples.csv", lemma, syn, prep, "formatted.csv", filt)
-    getFrequencies("formatted.csv", "frequencies.csv")
+    getFrequencies("formatted.csv", "results.csv")
 
-# =================
-# UTILITY FUNCTIONS
-# =================
+    print("Finished!")
+    
+    clean()
+
+# deletes used databases
+def clean():
+    os.remove('verbs.csv')
+    os.remove('tuples.csv')
+    os.remove('formatted.csv')
+
+
+# =====================
+#   UTILITY FUNCTIONS
+# =====================
 
 # accepts the raw data and isolates potential verbs
 
@@ -102,9 +114,6 @@ def getTuples(inputName, outputName):
     
     rdr = csv.reader(open(inputName, 'r'), delimiter =",", skipinitialspace= True)
     next(rdr)
-
-
-    
     
     # parse in file
     for row in rdr:
@@ -122,7 +131,9 @@ def getTuples(inputName, outputName):
             wtr.writerow([docID]+tpl)
             
     print("Done.")
-    
+
+
+# calls searches for different levels of terms on a sentence
 def search(sentence, verbs, terms):
     
     lv1terms = list()
@@ -185,7 +196,7 @@ def buildTuples(sentence, terms, verbs, level):
     beg = -1
     end = -1
     term = ""
-    helpers = ['used to', 'appeares to', 'will have','have','had','has','be','is','are','were','will be', 'has been']
+    helpers = ['used to', 'appears to', 'will have','have','had','has','be','is','are','were','will be', 'has been']
     
     # iterate through the terms
     for term in terms:
@@ -212,7 +223,6 @@ def buildTuples(sentence, terms, verbs, level):
 
 
 # accepts a list of tuples and adds roots and synonyms
-
 def reformat(fileName, dictName, synName, prepName, outputName, filterName):
 
     print("Reformatitng...")
@@ -270,6 +280,7 @@ def reformat(fileName, dictName, synName, prepName, outputName, filterName):
     # headings
     wtr.writerow(["docID", "sentence","subject","predicate", "object", "root", "synonyms", "level", "distance"])
 
+    # make nice columns
     for row in rdr:
         docID = row[0]
         sentence = row[1]
@@ -307,7 +318,7 @@ def reformat(fileName, dictName, synName, prepName, outputName, filterName):
         
     print("Done.")
 
-
+# counts frequencies and recompile database
 def getFrequencies(fileName, outputName):
 
     print("Getting frequences...")
@@ -323,12 +334,15 @@ def getFrequencies(fileName, outputName):
     # counting frequencies
     for row in rdr:
 
+
+        # count predicate freqs
         predicate = row[3]
         if predicate in predFreqs:
             predFreqs[predicate] += 1
         else:
             predFreqs[predicate] = 1
 
+        # count root freqs
         root = row[5]
         
         if root in rootFreqs:
@@ -336,13 +350,14 @@ def getFrequencies(fileName, outputName):
         else:
             rootFreqs[root] = 1
 
-
+        # count subject freqs
         sub = row[2]
         if sub in subFreqs:
             subFreqs[sub] += 1
         else:
             subFreqs[sub] = 1
 
+        # count obj freqs
         obj = row[4]
         if obj in objFreqs:
             objFreqs[obj] += 1
@@ -355,12 +370,13 @@ def getFrequencies(fileName, outputName):
 
     wtr = csv.writer(open(outputName, 'w'), lineterminator = '\n')    
 
-
     # headings
     wtr.writerow(["subject", "object", "predicate", "sentence", "pred freq", "sub freq", "obj freq", "distance", "root", "root freq", "synonyms", "sub term","obj term", "level", "doc ID"])
 
-    # writing frequencies
+    # write columns
+    
     for row in rdr:
+        
         docID = row[0]
         sentence = row[1]
         subject = row[2]
