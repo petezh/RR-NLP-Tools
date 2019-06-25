@@ -43,7 +43,7 @@ def reformat(fileName, dictName, synName):
 
     
 
-    wtr = csv.writer(open("results.csv", 'w'))
+    wtr = csv.writer(open("results.csv", 'w'), lineterminator = '\n')
 
     # headings
     wtr.writerow(["subject","predicate","object", "root","synonyms"])
@@ -53,7 +53,8 @@ def reformat(fileName, dictName, synName):
         subject = row[0]
         obj = row[2]
         level = row[3]
-        verb = row[1]
+        fullverb = row[1]
+        verb = fullverb.split()[-1]
         root = roots[verb]
         syn = set()
 
@@ -62,7 +63,7 @@ def reformat(fileName, dictName, synName):
             syn.update(syns[ID])
 
         # write to output
-        wtr.writerow([subject, verb, obj, root, syn])
+        wtr.writerow([subject, fullverb, obj, root, syn])
         
         
 if __name__ == "__main__":

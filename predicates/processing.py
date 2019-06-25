@@ -4,12 +4,12 @@ import string
 import nltk
 
 def main():
-    readTable('raw.csv', 'processed.txt', 'lemmas.csv')
+    readTable('raw.csv', 'processed.csv', 'lemmas.csv')
 
 
 def readTable(inputName, outputName, dictName):
 
-    wtr = csv.writer(open(outputName,'w'))
+    wtr = csv.writer(open(outputName,'w'), lineterminator = '\n')
         
     with open(inputName,'r') as f:
 
@@ -51,10 +51,12 @@ def readTable(inputName, outputName, dictName):
                 # extract verbs
                 verbs = list()
 
+
                 for item in tagged:
                     if (item[1] == 'VB' or item[1] == 'VBD' or item[1] == 'VBG' or item[1] ==  'VBN' or item[1] =='VBP' or item[1] == 'VBZ') and item[0].isalpha() and (item[0] in validWords):
                         verbs.append(item[0].strip())
-                            
+   
+                
                 lastline = line
 
             # compile the terms

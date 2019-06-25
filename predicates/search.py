@@ -1,9 +1,10 @@
 import csv
+import string
 
 def main():
 
     output = open("tuples.txt", 'w')
-    wtr = csv.writer(output)
+    wtr = csv.writer(output, lineterminator = '\n')
     
     fileName = "processed.csv"
     
@@ -13,7 +14,7 @@ def main():
     for row in rdr:
 
         # evaluate each sentence
-        sentence = row[0]
+        sentence = row[0].translate(str.maketrans('', '', string.punctuation))
         verbs = eval(row[1])
         terms = eval(row[2])
         tuples = search(sentence, verbs, terms)
@@ -84,6 +85,7 @@ def buildTuples(sentence, terms, verbs, level):
     beg = -1
     end = -1
     term = ""
+    helpers = ['will have','have','had','has','be','is','are','were','will be']
 
     # iterate through the terms
     for term in terms:
@@ -91,12 +93,18 @@ def buildTuples(sentence, terms, verbs, level):
         # get indices
         start, stop = getIndices(term[1], sentence)
         end = start
-
+        
         # search for verbs between terms
         if end > beg:
             for verb in verbs:
                 if not sentence.find(verb, beg, end) == -1:
-                    tuples.append([lastTerm[1], verb, term[1], level])
+                    words = sentence.split()
+                    wordBefore = words[words.index(verb)-1]
+                    if wordBefore in helpers:
+                        tuples = tuples[:-1]
+                        tuples.append([lastTerm[1], wordBefore + " " + verb, term[1], level])
+                    else:
+                        tuples.append([lastTerm[1], verb, term[1], level])
         beg = stop
         lastTerm = term
         
