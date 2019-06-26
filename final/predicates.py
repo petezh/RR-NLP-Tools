@@ -15,6 +15,7 @@ def main():
 
     execute(tablename, lemmapath, preppath, synpath, filterpath)
 
+# execute methods
 def execute(table, lemma, prep, syn, filt):
     
     getVerbs(table, 'verbs.csv', lemma)
