@@ -24,8 +24,8 @@ def execute(table, lemma, prep, syn, filt):
     getFrequencies("formatted.csv", "results.csv")
 
     print("Finished!")
-    
-    clean()
+
+    #clean()
 
 # deletes used databases
 def clean():
@@ -155,9 +155,11 @@ def search(sentence, verbs, terms):
 
     # build tuples for each term
     tuples_1 = buildTuples(sentence, lv1terms, verbs, 1)
-    tuples_2 = buildTuples(sentence, lv2terms, verbs, 2)
-    tuples_3 = buildTuples(sentence, lv3terms, verbs, 3)
+    tuples_2 = buildTuples(sentence, lv2terms+lv1terms, verbs, 2)
+    tuples_3 = buildTuples(sentence, lv3terms+lv2terms+lv1terms, verbs, 3)
 
+    
+    
     return tuples_1 + tuples_2 + tuples_3
         
 # returns the break level of a term
@@ -190,14 +192,27 @@ def getIndices(termText, sentence):
 
 
 # construct subject-predicate-object tuples
-def buildTuples(sentence, terms, verbs, level):
+def buildTuples(sentence, rawterms, verbs, level):
 
     tuples = list()
     
     beg = -1
     end = -1
-    term = ""
+    terms = rawterms.copy()
     helpers = ['used to', 'appears to', 'will have','have','had','has','be','is','are','were','will be', 'has been']
+
+    
+    for i in range(len(rawterms)):
+        for j in range(i+1,len(rawterms)):
+            toremove =checkContains(rawterms[i], rawterms[j])
+            if not toremove == "":
+                if toremove in terms:
+                    terms.remove(toremove)
+
+    indexPairs = [[term, sentence.find(term[1])] for term in terms]
+    indexPairs.sort(key = lambda x: x[1])
+    terms = [pair[0] for pair in indexPairs]
+
     
     # iterate through the terms
     for term in terms:
@@ -205,22 +220,35 @@ def buildTuples(sentence, terms, verbs, level):
         # get indices
         start, stop = getIndices(term[1], sentence)
         end = start
+
+
+        
         
         # search for verbs between terms
         if end > beg:
+            wordDist= len(sentence[beg:end].split())
             for verb in verbs:
-                if not sentence.find(verb, beg, end) == -1:
+                if not sentence.find(verb, beg, end) == -1 and not max(getLevel(term[0]), getLevel(lastTerm[0])) < level:
                     words = sentence.split()
                     wordBefore = words[words.index(verb)-1]
                     if wordBefore in helpers:
                         tuples = tuples[:-1]
-                        tuples.append([sentence, lastTerm[1], lastTerm[0], wordBefore + " "+ verb, term[1], term[0], level, end-beg])
+                        tuples.append([sentence, lastTerm[1], lastTerm[0], verb, term[1], term[0], level, end-beg, wordDist, wordBefore])
                     else:
-                        tuples.append([sentence, lastTerm[1], lastTerm[0], verb, term[1],term[0], level, end-beg])
+                        tuples.append([sentence, lastTerm[1], lastTerm[0], verb, term[1],term[0], level, end-beg, wordDist, ""])
         beg = stop
         lastTerm = term
         
     return tuples
+
+
+def checkContains(term1, term2):
+    if term1[1] in term2[1]:
+        return term1
+    if term2[1] in term1[1]:
+        return term2
+    return ""
+
 
 
 # accepts a list of tuples and adds roots and synonyms
@@ -291,31 +319,38 @@ def reformat(fileName, dictName, synName, prepName, outputName, filterName):
         objterm = row[6]
         level = row[7]
         distance = row[8]
-        fullverb = row[4]
-        verb = fullverb.split()[-1]
+        helper = row[10]
+        verb = row[4]
         root = roots[verb]
+        wordDistance = row[9]
         
         syn = set()
 
 
         # grab preps
         words = sentence.split()
-        
-        wordbefore = words[words.index(fullverb.split()[0])-1]
+
+        if len(helper)>0:
+            wordbefore = words[words.index(helper)]
+        else:
+            wordbefore = words[words.index(verb)]
+
+        phrase = verb
+                               
         if wordbefore.strip() in preps:
-            fullverb = wordbefore + " " + fullverb
+            phrase = wordbefore + " " + verb
 
         wordafter = words[words.index(verb)+1]
         if wordafter.strip() in preps:
-            fullverb = fullverb + " " + wordafter
+            phrase = verb + " " + wordafter
             
         # use sets to avoid duplicates
         for ID in synIDs[root]:
             syn.update(syns[ID])
 
         # write to output
-        if not fullverb in filters:
-            wtr.writerow([docID, sentence, subject, fullverb, obj, root, syn, level, distance, subterm, objterm])
+        if not phrase in filters:
+            wtr.writerow([docID, sentence, subject, phrase, obj, root, syn, level, distance, subterm, objterm, helper, wordDistance])
         
     print("Done.")
 
@@ -372,11 +407,12 @@ def getFrequencies(fileName, outputName):
     wtr = csv.writer(open(outputName, 'w'), lineterminator = '\n')    
 
     # headings
-    wtr.writerow(["subject", "object", "predicate", "sentence", "pred freq", "sub freq", "obj freq", "distance", "root", "root freq", "synonyms", "sub term","obj term", "level", "doc ID"])
+    wtr.writerow(["subject", "object", "predicate", "sentence", "pred freq", "sub freq", "obj freq", "char dist", "word dist", "root", "root freq", "synonyms", "pred term", "sub term","obj term", "level", "doc ID"])
 
     # write columns
     
     for row in rdr:
+
         
         docID = row[0]
         sentence = row[1]
@@ -389,12 +425,20 @@ def getFrequencies(fileName, outputName):
         root = row[5]
         synonyms = row[6]
         level = row[7]
-        distance = row[8]
+        chardist = row[8]
         subterm = row[9]
         objterm = row[10]
+        helper = row[11]
         rootfr = rootFreqs[root]
+        worddist = row[12]
+
+        if len(helper)>0:
+            predterm = helper+":0:"+predicate
+            predicate = helper + " " + predicate
+        else:
+            predterm = predicate
         
-        wtr.writerow([subject, obj, predicate, sentence, predfr, subfr, objfr, distance, root, rootfr, synonyms, subterm, objterm, level, docID])
+        wtr.writerow([subject, obj, predicate, sentence, predfr, subfr, objfr, chardist, worddist, root, rootfr, synonyms, predterm, subterm,  objterm,  level, docID])
 
     print("Done")
 
