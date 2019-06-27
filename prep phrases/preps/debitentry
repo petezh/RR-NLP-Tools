@@ -1,2 +1,0 @@
-TRUE_NAME:DebitEntry	GROUP:Quantity	PARENTS:Quantity	CHILDREN:	COORDINATES:Age,Amount,AmountAdded,AmountOfVariance,Approximation,DebitEntry,Distance,Dividend,Exponent,LevelApproached,Magnitude,Modulus,Multiplier,OriginOfMeasure,Price,Quantity,RatioDenominator,StandardMissed,Subtrahend,Sum,SumBasis,TargetMissed,ThingAdditional,UnitReference,UnitSize
-to	000493932=18	placed before a debit entry in accounting.
