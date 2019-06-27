@@ -5,7 +5,7 @@ import csv
 def main():
 
     inputName = "results.csv"
-    outputName = "graph.rdf"
+    outputName = "web.txt"
 
     parse(inputName, outputName)
 
@@ -22,10 +22,9 @@ def parse(inputName, outputName):
         obj = Literal(row[1])
         pred = Literal(row[2])
 
-        web.add((subj, obj, pred))
+        web.add((subj, pred, obj))
 
-
-    print(web.serialize(format = 'ntriples'))
-
+    web.serialize(destination = outputName, format = 'turtle')
+    
 if __name__ == "__main__":
     main()

@@ -1,13 +1,20 @@
+#
+# install the symspellpy module with:
+# 
+# pip install -U symspellpy
+#
+
 import csv
 from symspellpy.symspellpy import SymSpell, Verbosity
+import re
 
 def main():
 
     filePath = "raw.csv"
-    freqPath = "dictionary.txt"
     outPath = "checked.csv"
     omitPath = "omit.csv"
-    dictPath = "words_alpha.txt"
+    freqPath = "tools\\frequencies.txt"
+    dictPath = "tools\\dictionary.txt"
     
     spellCheck(filePath, freqPath, outPath, omitPath, dictPath)
     
@@ -47,26 +54,34 @@ def spellCheck(filePath, freqPath, outPath, omitPath, dictPath):
         sentence = row[2]
         words = term.split(":")
 
+
+            
         for i in range(len(words)):
             word = words[i]
+
             if word.isalpha() and (len(word) > 4) and (not word in dictionary) and (not word in omissions):
-                
-                fixes = sym_spell.lookup(word, Verbosity.TOP, 1)
-                fix = word
-                if(len(fixes) > 0):
-                    if not isChemical(word):
-                        
-                        fix = fixes[0].term
-                if not fix == word:
-                    words[i] = fix
-                    print(word + " -> " + fix + "\n" + sentence + "\n")
+
+                try:
+                    index = sentence.lower().split().index(word)
+                except:
+                    index = -1
+                if not index == -1 and sentence.split()[index].islower() and (index == 0 or sentence.split()[index-1].islower()):       
+                    fixes = sym_spell.lookup(word, Verbosity.TOP, 1)
+                    fix = word
+                    if(len(fixes) > 0):
+                        if not isChemical(word):
+                            
+                            fix = fixes[0].term
+                    if not fix == word:
+                        words[i] = fix
+                        print(word + " -> " + fix + "\n" + sentence + "\n")
 
         row[0] = ":".join(words)
 
         outWriter.writerow(row)
                         
 def isChemical(word):
-    return word.endswith(("yl", "ane", "ene", "ide", "ate", "ite", "ioul", "ine", "ase", "ox", "ion", "amino", "one", "ido")) or word.startswith(("bio", "di", "chro", "pyr", "non")) or ("chiral") in word 
+    return word.endswith(("ato", "deoxy","yl", "ane", "ene", "ide", "ate", "ite", "ioul", "ine", "ase", "ox", "ion", "amino", "one", "ido", "cyclo")) or word.startswith(("bio", "di", "chro", "pyr", "non", "cyclo")) or ("chiral") in word 
                                                                                                     
 
 
