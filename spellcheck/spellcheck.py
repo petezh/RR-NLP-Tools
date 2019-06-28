@@ -1,6 +1,7 @@
 #
-# install the symspellpy module with:
-# 
+# The spellchecker makes use of the SymSpellPy library.
+#
+# Install the symspellpy module with:
 # pip install -U symspellpy
 #
 
@@ -14,11 +15,11 @@ def main():
     outPath = "checked.csv"
     omitPath = "omit.csv"
     freqPath = "tools\\frequencies.txt"
-    dictPath = "tools\\dictionary.txt"
+    dictPath = "tools\\dict.txt"
     
-    spellCheck(filePath, freqPath, outPath, omitPath, dictPath)
+    spellCheck(filePath, freqPath, outPath, omitPath, dictPath, 0, 1, 2)
     
-def spellCheck(filePath, freqPath, outPath, omitPath, dictPath):
+def spellCheck(filePath, freqPath, outPath, omitPath, dictPath, termCol, origCol, sentCol):
 
     sym_spell = SymSpell(3, 7)
     sym_spell.load_dictionary(freqPath, 0, 1)
@@ -46,43 +47,84 @@ def spellCheck(filePath, freqPath, outPath, omitPath, dictPath):
     outWriter = csv.writer(outfile, lineterminator = '\n')
     outWriter.writerow(["term", "original", "sentence", "docID"])
 
-    
+    numUp = 0
+    numCor = 0
+        
     next(fileReader)
     for row in fileReader:
 
-        term = row[0]
-        sentence = row[2]
+        term = row[termCol]
+        orig = row[origCol]
+        sentence = row[sentCol]
         words = term.split(":")
+        title = False
 
 
-            
+        
+        
         for i in range(len(words)):
+
             word = words[i]
 
-            if word.isalpha() and (len(word) > 4) and (not word in dictionary) and (not word in omissions):
+            # try to get index
+            try:
+                index = sentence.lower().split().index(word)
+                orig = sentence.split()[index]
+            except:
+                index = -1
+                orig = ""
 
-                try:
-                    index = sentence.lower().split().index(word)
-                except:
-                    index = -1
-                if not index == -1 and sentence.split()[index].islower() and (index == 0 or sentence.split()[index-1].islower()):       
-                    fixes = sym_spell.lookup(word, Verbosity.TOP, 1)
-                    fix = word
-                    if(len(fixes) > 0):
-                        if not isChemical(word):
+
+            # check if first word of sentence
+            firstWord = index == 0
+
+            # word characters only and sufficiently long
+            if word.isalpha() and len(word) > 4:
+
+                if not firstWord and (orig.istitle() or orig == word.upper()):
+
+                        #print(word)
+                        numUp += 1
                             
-                            fix = fixes[0].term
-                    if not fix == word:
-                        words[i] = fix
-                        print(word + " -> " + fix + "\n" + sentence + "\n")
+                        word = word.upper()
+                        title = True
 
-        row[0] = ":".join(words)
+                
+                # if incorrect
+                elif not word.lower() in dictionary:
+                    
+                    # if it's a title, make uppercase and collate
+                    if title:
 
-        outWriter.writerow(row)
+                        #print(word)
+                            
+                        word = word.upper()
+                        title = True
+
+                    elif not word in omissions:
+
+                        # try to find a replacement
+                        fixes = sym_spell.lookup(word, Verbosity.TOP, 1)
+                        if(len(fixes) > 0):
+
+                            #print(word + " -> " + fixes[0].term + "\n")
+                            numCor += 1
+
+                            word = fixes[0].term
+                                   
+
+                elif title:
+
+                    # end title sequence
+                    title = False
                         
-def isChemical(word):
-    return word.endswith(("ato", "deoxy","yl", "ane", "ene", "ide", "ate", "ite", "ioul", "ine", "ase", "ox", "ion", "amino", "one", "ido", "cyclo")) or word.startswith(("bio", "di", "chro", "pyr", "non", "cyclo")) or ("chiral") in word 
-                                                                                                    
+        
+        row[0] = ":".join(words)
+        
+        outWriter.writerow(row)
+
+
+    print("Identified " + str(numUp) + " titles and " + str(numCor) + " misspellings.")
 
 
 if __name__ == "__main__":
