@@ -207,7 +207,7 @@ def buildTuples(sentence, rawterms, verbs, level):
     beg = -1
     end = -1
     terms = rawterms.copy()
-    helpers = ['used to', 'appears to', 'will have','have','had','has','be','is','are','were','will be', 'has been']
+    helpers = ['will have','have','had','has','be','is','are','were','will be', 'has been', 'have been']
 
     
     for i in range(len(rawterms)):
@@ -239,11 +239,19 @@ def buildTuples(sentence, rawterms, verbs, level):
                 if not sentence.find(verb, beg, end) == -1 and not max(getLevel(term[0]), getLevel(lastTerm[0])) < level:
                     words = sentence.split()
                     wordBefore = words[words.index(verb)-1]
+                    if words.index(verb)>1:
+                        twoWordsBefore = words[words.index(verb)-2] + " " + words[words.index(verb)-1]
+                    else:
+                        twoWordsBefore = ""
                     if wordBefore in helpers:
                         tuples = tuples[:-1]
                         tuples.append([sentence, lastTerm[1], lastTerm[0], verb, term[1], term[0], level, end-beg, wordDist, wordBefore])
                     else:
-                        tuples.append([sentence, lastTerm[1], lastTerm[0], verb, term[1],term[0], level, end-beg, wordDist, ""])
+                        if twoWordsBefore in helpers:
+                            tuples = tuples[:-2]
+                            tuples.append([sentence, lastTerm[1], lastTerm[0], verb, term[1], term[0], level, end-beg, wordDist, twoWordsBefore])
+                        else:
+                            tuples.append([sentence, lastTerm[1], lastTerm[0], verb, term[1],term[0], level, end-beg, wordDist, ""])
         beg = stop
         lastTerm = term
         
@@ -339,18 +347,18 @@ def reformat(fileName, dictName, synName, prepName, outputName, filterName):
         words = sentence.split()
 
         if len(helper)>0:
-            wordbefore = words[words.index(helper)]
+            wordbefore = words[words.index(helper.split()[0])-1]
         else:
-            wordbefore = words[words.index(verb)]
+            wordbefore = words[words.index(verb)-1]
 
-        phrase = verb
+        phrase =verb
                                
         if wordbefore.strip() in preps:
-            phrase = wordbefore + " " + verb
+            phrase = wordbefore + " " + phrase
 
         wordafter = words[words.index(verb)+1]
         if wordafter.strip() in preps:
-            phrase = verb + " " + wordafter
+            phrase = phrase + " " + wordafter
             
         # use sets to avoid duplicates
         for ID in synIDs[stem]:
