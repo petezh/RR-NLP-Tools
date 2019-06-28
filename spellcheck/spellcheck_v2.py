@@ -56,12 +56,10 @@ def spellCheck(filePath, freqPath, fixesPath, outPath, omitPath, dictPath):
     # create change log
     fixFile = open(fixesPath, 'w')
     fixWriter = csv.writer(fixFile, lineterminator = '\n')
-    fixWriter.writerow(["orig", "new", "fix", "sentence"])
+    fixWriter.writerow(["orig", "new", "sentence"])
 
-    # counters
-    numUp = 0
+    # counter
     numCor = 0
-    numAbb = 0
 
     print("Searching file...")
     
@@ -74,7 +72,7 @@ def spellCheck(filePath, freqPath, fixesPath, outPath, omitPath, dictPath):
         sentence = sentence.translate(str.maketrans('', '', string.punctuation))
         words = term.split(":")
         title = False
-        
+        spellError = False
         
         for i in range(len(words)):
 
@@ -89,64 +87,31 @@ def spellCheck(filePath, freqPath, fixesPath, outPath, omitPath, dictPath):
                 orig = ""
                 
 
-            # check if first word of sentence
-            firstWord = index == 0
-
             # word characters only and sufficiently long
-            if word.isalpha() and len(word) > 4 and not word.lower() in omissions:
-
-                if (not firstWord and orig.istitle()) or orig == word.upper():
-
-                        numUp += 1
-                            
-                        words[i] = word.upper()
-                        errType = "abbrev"
-                        title = True
-
+            if word.isalpha() and len(word) > 4 and not word in omissions and not word in dictionary:
+                if (word+"s") in sentence.lower().split() and index == -1:
+                        words[i] += "s"
+                        numCor += 1
+                        print("changed "+word + " to " + word+"s")
+                elif not index == -1 and (orig.islower() or index == 0):
+                    fixes = sym_spell.lookup(word, Verbositsy.TOP, 1)
                 
-                # if incorrect
-                elif not word.lower() in dictionary and orig.islower():
-                    
-                    # if it's a title, make uppercase and collate
-                    if title:
-
-                        #print("MAKE UPPER " + word + "\n")
-                            
-                        words[i] = word.upper()
-
-                        errType = "abbrev"
-                        title = True
-
-                    else:
-
-                        # try to find a replacement
-                        fixes = sym_spell.lookup(word, Verbosity.TOP, 1)
-                        if(len(fixes) > 0):
-
-                            #print(word + " -> " + fixes[0].term + "\n")
-                            numCor += 1
-                            words[i] = fixes[0].term
-
-                            if not orig == fixes[0].term:
-                                errType = "spelling"
-                                   
-
-                elif title:
-
-                    # end title sequence
-                    title = False
+                    if(len(fixes) > 0) and not fixes[0].term == word and fixes[0].term in dictionary:
+                        words[i] = fixes[0].term
+                        numCor += 1
+                        print("changed "+word + " to " + fixes[0].term)
+                                
                         
-
-        
         newTerm = ":".join(words)        
         if not term == newTerm:
-            fixWriter.writerow([orig, fixes[0].term, "spelling", sentence])
+            fixWriter.writerow([term, newTerm, sentence])
+            term = newTerm
 
         outWriter.writerow(row)
 
     print("Done")
     
-    print("Identified " + str(numUp) + " titles and " + str(numCor) + " misspellings.")
+    print("Identified " + str(numCor) + " misspellings.")
 
 
 if __name__ == "__main__":
