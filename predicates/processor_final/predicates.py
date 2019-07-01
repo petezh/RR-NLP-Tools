@@ -352,21 +352,25 @@ def reformat(fileName, dictName, synName, prepName, outputName, filterName):
             wordbefore = words[words.index(verb)-1]
 
         phrase =verb
-                               
+
+        prepsFound = [""]*2
+        
         if wordbefore.strip() in preps:
             phrase = wordbefore + " " + phrase
+            prepsFound[0] = wordbefore
 
         wordafter = words[words.index(verb)+1]
         if wordafter.strip() in preps:
             phrase = phrase + " " + wordafter
-            
+            prepsFound[1] = wordafter
+        
         # use sets to avoid duplicates
         for ID in synIDs[stem]:
             syn.update(syns[ID])
 
         # write to output
         if not phrase in filters:
-            wtr.writerow([docID, sentence, subject, phrase, obj, stem, syn, level, distance, subterm, objterm, helper, wordDistance])
+            wtr.writerow([docID, sentence, subject, phrase, obj, stem, syn, level, distance, subterm, objterm, helper, wordDistance, prepsFound])
         
     print("Done.")
 
@@ -423,7 +427,7 @@ def getFrequencies(fileName, outputName):
     wtr = csv.writer(open(outputName, 'w'), lineterminator = '\n')    
 
     # headings
-    wtr.writerow(["subject", "object", "predicate", "sentence", "pred freq", "sub freq", "obj freq", "char dist", "word dist", "stem", "stem freq", "synonyms", "pred term", "sub term","obj term", "level", "doc ID"])
+    wtr.writerow(["subject", "object", "predicate", "sentence", "pred freq", "sub freq", "obj freq", "char dist", "word dist", "stem", "stem freq", "synonyms", "pred term", "sub term","obj term", "level", "doc ID", "changes"])
 
     # write columns
     
@@ -447,14 +451,24 @@ def getFrequencies(fileName, outputName):
         helper = row[11]
         stemfr = stemFreqs[stem]
         worddist = row[12]
+        prepsFound = eval(row[13])
 
+        changes=[]
+        if len(helper)>0:
+            changes += ["conjugated with: "+helper]
+        if len(prepsFound[0])>0:
+            changes += ["prefix: " + prepsFound[0]]
+        if len(prepsFound[1])>0:
+            changes += ["postfix: " + prepsFound[1]]
+        
+        change = ", ".join(changes)
         if len(helper)>0:
             predterm = helper+":0:"+predicate
             predicate = helper + " " + predicate
         else:
             predterm = predicate
         
-        wtr.writerow([subject, obj, predicate, sentence, predfr, subfr, objfr, chardist, worddist, stem, stemfr, synonyms, predterm, subterm,  objterm,  level, docID])
+        wtr.writerow([subject, obj, predicate, sentence, predfr, subfr, objfr, chardist, worddist, stem, stemfr, synonyms, predterm, subterm,  objterm,  level, docID, change])
 
     print("Done")
 
