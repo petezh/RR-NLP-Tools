@@ -4,4 +4,6 @@ This computational linguistics project was conducted in the Material Measurement
 
 ![](https://cdn-images-1.medium.com/max/1600/1*nteaQRxNNSXMlAnT31iXjw.png)
 
+My code automates the construction of subject-predicate-object pairs and executes a spellcheck on the terms.
+
 Read more here: https://www.nist.gov/programs-projects/novel-root-and-rule-based-natural-language-processing-nlp-approach-information
