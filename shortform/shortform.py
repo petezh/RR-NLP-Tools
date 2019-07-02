@@ -52,7 +52,7 @@ def cleanTable(inPath, abbrevPath, outPath):
     outFile = open(outPath, 'w')
     outWriter = csv.writer(outFile, lineterminator = "\n")
 
-    outWriter.writerow(["terms","original","sentences","docID", "jargon", "upperform", "frequency"])
+    outWriter.writerow(["terms","original","sentences","document-jargon ID", "jargon", "upperform", "frequency"])
 
     docAbbs = dict()
     for abbRow in abbrevReader:
@@ -332,7 +332,7 @@ def _grab_db_write_table(dbIn, tableIn, fileOut, abstractName, IDName):
     processed = _process(input,0,1,":memory:","tab")
     out = open(fileOut, "w", newline = "")
     writeR = csv.writer(out, quoting = csv.QUOTE_ALL)
-    writeR.writerow(["Longform","Shortform","ID","Frequency","Standard Div","Average","Suspicious"])
+    writeR.writerow(["Longform","Shortform","Document-Jargon ID","Frequency","Standard Div","Average","Suspicious"])
     writeR.writerows(processed)
     connIn.close()
 
