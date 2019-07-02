@@ -9,10 +9,19 @@ blacklist = next(dictReader)
 stoppers = next(dictReader)
 doubles = next(dictReader)
 
+# process universals
+uniPath = "tools\shortforms.csv"
+uniReader = csv.reader(open(uniPath, 'r'), delimiter = ',')
+next(uniReader)
+universals = []
+
+for row in uniReader:
+    universals += [row]
+
 
 def main():
 
-    inPath = input("Table name?: ")
+    inPath = "raw.csv"
     outPath = "checked.csv"
     abbrevPath = "abbrev.csv"
     execute(inPath, outPath, abbrevPath)
@@ -22,7 +31,7 @@ def execute(inPath, outPath, abbrevPath):
     print("Getting abbreviations...")
     
     #grab_table_write_table(inPath, abbrevPath, "sentences", "document")
-    grab_table_write_table(inPath, abbrevPath, input("Sentence header?: "), input("Document header?: "))
+    #grab_table_write_table(inPath, abbrevPath, input("Sentence header?: "), input("Document header?: "))
 
     
     print("Done.")
@@ -43,49 +52,57 @@ def cleanTable(inPath, abbrevPath, outPath):
     outFile = open(outPath, 'w')
     outWriter = csv.writer(outFile, lineterminator = "\n")
 
-    lastRow = ["terms","original","sentences","docID"]
-    
+    outWriter.writerow(["terms","original","sentences","docID", "jargon", "upperform", "frequency"])
+
+    docAbbs = dict()
     for abbRow in abbrevReader:
-
-        # if not suspicious, then we look for it
         if not abbRow[6] == "Yes":
-            
-            targetID = abbRow[2]
-            found = False
-            
-            while not found:
-                
-                if not found and lastRow[3] == targetID:
-                    found == True
-                
-                if found:
-                    outWriter.writerow(lastRow)
-                    outWriter.writerow(fixRow(lastRow,abbrevRow))
-                    
-                else:
-                    outWriter.writerow(lastRow)
-
-                try:
-                    lastRow = next(inReader)
-                except StopIteration:
-                    break;
-                
-                if found and not lastRow[3] == targetID:
-                    break;
-                
-
-def fixRow(inRow, abbrevRow):
-
-    term = inRow[0]
-    abbrev = abbrevRow[1]
-    full = abbrevRow[0]
+            ID = abbRow[2]
+            if ID in docAbbs:
+                docAbbs[ID] += [[abbRow[0],abbRow[1], abbRow[3]]]
+            else:
+                docAbbs[ID] = [[abbRow[0],abbRow[1], abbRow[3]]]
+    
         
-    term.replace(abbrev.lower(), full.lower)
+    for inRow in inReader:
+        
+        docID = inRow[3]
+        if docID in docAbbs:
+            abbrevs = docAbbs[docID]
+        else:
+            abbrevs = []
 
-    inRow[0] = term
+        outWriter.writerow(fixRow(inRow, abbrevs))
+                
 
-    return inRow
+def fixRow(inRow, shortforms):
+    
+    term = inRow[0]
 
+    jargon = []
+    upperform = term
+    frequency = []
+    
+    for sf in shortforms:
+        if re.sub('[()]', '', sf[1].lower()) in term:
+
+            jargon += [[sf[0], sf[1]]]
+            upperform += " " + sf[0]
+            frequency += [[sf[1], sf[2]]]
+
+    for sf in universals:
+        if re.sub('[()]', '', sf[1].lower()) in term:
+
+            jargon += [[sf[0], sf[1]]]
+            upperform += " " + sf[0]
+
+    
+    if len(jargon)>0:            
+        return inRow + [jargon, upperform, frequency]
+    else:
+        return inRow
+
+    
 ### OLD CODE ###
 
 class StdevFunc:
