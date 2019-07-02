@@ -78,6 +78,7 @@ def cleanTable(inPath, abbrevPath, outPath):
 def fixRow(inRow, shortforms):
     
     term = inRow[0]
+    orig = inRow[1]
 
     jargon = []
     upperform = term
@@ -89,13 +90,25 @@ def fixRow(inRow, shortforms):
             jargon += [[sf[0], sf[1]]]
             upperform += " " + sf[0]
             frequency += [[sf[1], sf[2]]]
+            
+        elif re.sub('[()]', '', sf[0].lower()) in orig.lower():
 
+            jargon += [[sf[0], sf[1]]]
+            upperform += " " + re.sub('[()]', '',sf[1])
+            frequency += [[sf[1], sf[2]]]
+
+        
     for sf in universals:
+        
         if re.sub('[()]', '', sf[1].lower()) in term:
 
             jargon += [[sf[0], sf[1]]]
             upperform += " " + sf[0]
 
+        elif re.sub('[()]', '', sf[0].lower()) in orig.lower():
+
+            jargon += [[sf[0], sf[1]]]
+            upperform += " " + re.sub('[()]', '',sf[1])
     
     if len(jargon)>0:            
         return inRow + [jargon, upperform, frequency]
