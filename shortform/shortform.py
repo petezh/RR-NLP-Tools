@@ -1,5 +1,10 @@
-import csv, string, re, sqlite3, math
+# 
+# For discipline-specific abbreviations, store the
+# dictionary into the "shortforms.csv" with the
+# "shortform - longform" format.
+#
 
+import csv, string, re, sqlite3, math
 
 # process dictionary
 dictPath = "tools\dict.csv"
@@ -9,7 +14,7 @@ blacklist = next(dictReader)
 stoppers = next(dictReader)
 doubles = next(dictReader)
 
-# process universals
+# process disciplines
 uniPath = "tools\shortforms.csv"
 uniReader = csv.reader(open(uniPath, 'r'), delimiter = ',')
 next(uniReader)
@@ -30,7 +35,7 @@ def execute(inPath, outPath, abbrevPath):
 
     print("Getting abbreviations...")
     
-    #grab_table_write_table(inPath, abbrevPath, "sentences", "document")
+    grab_table_write_table(inPath, abbrevPath, "sentences", "document")
     #grab_table_write_table(inPath, abbrevPath, input("Sentence header?: "), input("Document header?: "))
 
     
@@ -42,6 +47,8 @@ def execute(inPath, outPath, abbrevPath):
 
 def cleanTable(inPath, abbrevPath, outPath):
 
+
+    # file processing
     inFile = open(inPath, 'r')
     inReader = csv.reader(inFile)
     next(inReader)
@@ -54,6 +61,7 @@ def cleanTable(inPath, abbrevPath, outPath):
 
     outWriter.writerow(["terms","original","sentences","document-jargon ID", "jargon", "upperform", "frequency"])
 
+    # find all abbreviations used for a given document
     docAbbs = dict()
     for abbRow in abbrevReader:
         if not abbRow[6] == "Yes":
@@ -62,8 +70,8 @@ def cleanTable(inPath, abbrevPath, outPath):
                 docAbbs[ID] += [[abbRow[0],abbRow[1], abbRow[3]]]
             else:
                 docAbbs[ID] = [[abbRow[0],abbRow[1], abbRow[3]]]
-    
-        
+
+    # fix rows and write the new row
     for inRow in inReader:
         
         docID = inRow[3]
@@ -83,33 +91,41 @@ def fixRow(inRow, shortforms):
     jargon = []
     upperform = term
     frequency = []
-    
+
+    # use the generated shortforms
     for sf in shortforms:
-        if re.sub('[()]', '', sf[1].lower()) in term:
 
-            jargon += [[sf[0], sf[1]]]
-            upperform += " " + sf[0]
-            frequency += [[sf[1], sf[2]]]
+        abbrev = re.sub('[()]', '', sf[1])
+
+        sfPresent = abbrev.lower() in term.split(":")
+        lfPresent = sf[0].lower() in orig.lower()
+
+        if sfPresent and not lfPresent:
+            jargon += [[sf[0], abbrev]]
+            upperform += " " + sf[0].lower()
+            frequency += [[abbrev, sf[2]]]
             
-        elif re.sub('[()]', '', sf[0].lower()) in orig.lower():
+        if lfPresent and not sfPresent:
 
-            jargon += [[sf[0], sf[1]]]
-            upperform += " " + re.sub('[()]', '',sf[1])
-            frequency += [[sf[1], sf[2]]]
+            jargon += [[sf[0], abbrev]]
+            upperform += " " + re.sub('[()]', '', sf[1]) + " "
+            frequency += [[abbrev, sf[2]]]
 
-        
+    # use the universal shortforms
     for sf in universals:
+
+        sfPresent = sf[1].lower() in term.split(":")
+        lfPresent = sf[0].lower() in orig.lower()
         
-        if re.sub('[()]', '', sf[1].lower()) in term:
+        if sfPresent and not lfPresent:
 
             jargon += [[sf[0], sf[1]]]
-            upperform += " " + sf[0]
+            upperform += " " + sf[0].lower()
 
-        elif re.sub('[()]', '', sf[0].lower()) in orig.lower():
-
+        if lfPresent and not sfPresent:
             jargon += [[sf[0], sf[1]]]
-            upperform += " " + re.sub('[()]', '',sf[1])
-    
+            upperform += " " + sf[1] + " "
+
     if len(jargon)>0:            
         return inRow + [jargon, upperform, frequency]
     else:
