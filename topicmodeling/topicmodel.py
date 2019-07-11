@@ -8,6 +8,7 @@ import pandas as pd
 from pprint import pprint
 import string
 import math
+import sqlite3
 
 # gensim
 import gensim
@@ -36,9 +37,9 @@ results = csv.writer(resultFile,lineterminator ='\n')
 
 def main():
     i = 1
-    numtops = [5, 10, 20, 50]
+    numtops = [5, 10, 20]
     ratios = [0.01, 0.02]
-    resistances = [0.3, 0.35, 0.4, 0.45, 0.5]
+    resistances = [0.8]
     for nt in numtops:
         for rat in ratios:
             for res in resistances:
@@ -155,7 +156,7 @@ def test(rat, res, nt):
             run += 1
 
     results.writerow([nt, rat, res, averageCoherence, totalTopics])
-    
+        
     topicFile.close()
     relationFile.close()
 
