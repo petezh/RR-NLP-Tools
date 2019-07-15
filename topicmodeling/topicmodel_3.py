@@ -30,18 +30,21 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn import feature_extraction
 
-
-
-resultFile = open("results.csv",'a')
-results = csv.writer(resultFile,lineterminator ='\n')
-
+STEM = "databases\\"
 
 def main():
-    execute(10, 8)
+    i = 1
+    numtops = [5, 8, 10, 15, 20]
+    passes = [10, 20, 30, 40, 50]
+
+    
+    for nt in numtops:
+        for p in passes:
+            execute(p, nt)
     
 def execute(passes, topics):
     
-    con = sqlite3.connect("topics.db")
+    con = sqlite3.connect(STEM + "topics_p" + str(passes)+"_t"+str(topics)+".db")
     cur = con.cursor()
 
     print("Training LDA...")
