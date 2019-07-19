@@ -11,9 +11,11 @@ import string
 import nltk
 import os
 
+def main():
+    execute("par_short.csv", "permenides_results.csv")
 
 # execute methods
-def execute(inPath, outPath):
+def execute(table, outPath):
     
     lemma = "tools\\lemmas.csv"
     prep = "tools\\preps.csv"
@@ -25,9 +27,10 @@ def execute(inPath, outPath):
     reformat("tuples.csv", lemma, syn, prep, "formatted.csv", filt)
     getFrequencies("formatted.csv", outPath)
 
+    clean()
+    
     print("Finished!")
 
-    clean()
 
 # deletes used databases
 def clean():
@@ -320,6 +323,8 @@ def reformat(fileName, dictName, synName, prepName, outputName, filterName):
     # headings
     wtr.writerow(["docID", "sentence","subject","predicate", "object", "stem", "synonyms", "level", "distance"])
 
+    lastrow = ["test"]
+    
     # make nice columns
     for row in rdr:
         docID = row[0]
@@ -354,10 +359,14 @@ def reformat(fileName, dictName, synName, prepName, outputName, filterName):
             phrase = wordbefore + " " + phrase
             prepsFound[0] = wordbefore
 
-        wordafter = words[words.index(verb)+1]
-        if wordafter.strip() in preps:
-            phrase = phrase + " " + wordafter
-            prepsFound[1] = wordafter
+        try:
+            wordafter = words[words.index(verb)+1]
+            
+            if wordafter.strip() in preps:
+                phrase = phrase + " " + wordafter
+                prepsFound[1] = wordafter
+        except IndexError:
+            pass
         
         # use sets to avoid duplicates
         for ID in synIDs[stem]:
@@ -365,8 +374,11 @@ def reformat(fileName, dictName, synName, prepName, outputName, filterName):
 
         # write to output
         if not phrase in filters:
-            wtr.writerow([docID, sentence, subject, phrase, obj, stem, syn, level, distance, subterm, objterm, helper, wordDistance, prepsFound])
-        
+            row = [docID, sentence, subject, phrase, obj, stem, syn, level, distance, subterm, objterm, helper, wordDistance, prepsFound]
+            if not row == lastrow:
+                wtr.writerow(row)
+                lastrow = row
+            
     print("Done.")
 
 # counts frequencies and recompile database
@@ -467,3 +479,5 @@ def getFrequencies(fileName, outputName):
 
     print("Done")
 
+if __name__ == "__main__":
+    main()
