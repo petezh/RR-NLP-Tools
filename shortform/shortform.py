@@ -35,23 +35,28 @@ def execute(inPath, outPath, abbrevPath):
 
     print("Getting abbreviations...")
     
-    grab_table_write_table(inPath, abbrevPath, "sentences", "document")
+    grab_table_write_table(inPath, abbrevPath,  "sentences", "document")
     #grab_table_write_table(inPath, abbrevPath, input("Sentence header?: "), input("Document header?: "))
 
     
     print("Done.")
 
     print("Cleaning table...")
-    cleanTable(inPath, abbrevPath, outPath)
+    cleanTable(inPath, abbrevPath, outPath, "term", "originals", "document")
     print("Done.")
 
-def cleanTable(inPath, abbrevPath, outPath):
-
+def cleanTable(inPath, abbrevPath, outPath, termName, origName, docName):
 
     # file processing
     inFile = open(inPath, 'r')
-    inReader = csv.reader(inFile)
-    next(inReader)
+    inReader = csv.reader(inFile, delimiter = "\t")
+
+    
+    header = next(inReader)
+    print(header)
+    termIndex = header.index(termName)
+    origIndex = header.index(origName)
+    docIndex = header.index(docName)
     
     abbrevFile = open(abbrevPath, 'r')
     abbrevReader = csv.reader(abbrevFile)
@@ -74,19 +79,19 @@ def cleanTable(inPath, abbrevPath, outPath):
     # fix rows and write the new row
     for inRow in inReader:
         
-        docID = inRow[3]
+        docID = inRow[docIndex]
         if docID in docAbbs:
             abbrevs = docAbbs[docID]
         else:
             abbrevs = []
 
-        outWriter.writerow(fixRow(inRow, abbrevs))
+        outWriter.writerow(fixRow(inRow, abbrevs, termIndex, origIndex))
                 
 
-def fixRow(inRow, shortforms):
+def fixRow(inRow, shortforms, termIndex, origIndex):
     
-    term = inRow[0]
-    orig = inRow[1]
+    term = inRow[termIndex]
+    orig = inRow[origIndex]
 
     jargon = []
     upperform = term
@@ -342,7 +347,7 @@ def _process(input, searchIndex, IDIndex, db, tab):
     return curse.fetchall()
 
 def grab_table_write_table(fileIn, fileOut, abstractName, IDName): # Accepts two filepaths and two strings
-    readR = csv.reader(open(fileIn, newline = "",encoding='utf-8-sig')) # readR will be used to read fileIn row by row (make sure it is a csv)
+    readR = csv.reader(open(fileIn, newline = "",encoding='utf-8-sig'), delimiter = "\t") # readR will be used to read fileIn row by row (make sure it is a csv)
     firstRow = next(readR) # make sure fileIn has headers as well
     searchIndex = firstRow.index(abstractName)
     IDIndex = firstRow.index(IDName) # use searchIndex and IDIndex as indices to search and ID respectively
